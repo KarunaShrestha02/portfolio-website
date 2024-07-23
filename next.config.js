@@ -1,17 +1,11 @@
-module.exports = {
-  future: {
-    webpack5: true,
-  },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // PostCSS loader
-    config.module.rules.push({
-      test: /\.css$/,
-      use: [
-        'style-loader',
-        'css-loader',
-        'postcss-loader',
-      ],
-    });
+const withPlugins = require('next-compose-plugins');
+const withCSS = require('@zeit/next-css');
+
+module.exports = withPlugins([withCSS], {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.alias['@sentry/node'] = '@sentry/browser';
+    }
     return config;
   },
-};
+});
